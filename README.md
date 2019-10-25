@@ -2,11 +2,15 @@ git clone repo
 
 ---
 
-```cd server```
-```pip3 install -r requirements.txt```
+```
+cd server
+pip3 install -r requirements.txt
+```
 OR
-```python3 -m pip install -r requirements.txt```
-```cd ..```
+```
+python3 -m pip install -r requirements.txt
+cd ..
+```
 
 ---
 
