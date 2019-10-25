@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@vue/eslint-config-airbnb": "^4.0.1",
     "buefy": "^0.8.6",
     "core-js": "^3.3.2",
     "vue": "^2.6.10",
@@ -39,7 +40,7 @@
     },
     "extends": [
       "plugin:vue/essential",
-      "@vue/standard",
+      "@vue/airbnb",
       "@vue/typescript"
     ],
     "rules": {},
