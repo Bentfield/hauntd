@@ -1,5 +1,11 @@
 # client
 
+## Useful Documentation Links
+* [Vuejs](https://vuejs.org/v2/guide/)
+* [Vue Router](https://router.vuejs.org/)
+* [Vuex](https://vuex.vuejs.org/)
+* [Buefy](https://buefy.org/documentation)
+
 ## Project setup
 ```
 npm install
