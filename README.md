@@ -10,6 +10,8 @@ OR
 
 ---
 
-```cd client
+```
+cd client
 npm install
-cd ..```
+cd ..
+```
