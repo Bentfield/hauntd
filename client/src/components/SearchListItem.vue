@@ -10,7 +10,7 @@
         <div class="content">
             <div class="columns is-gapless is-multiline">
               <div class="column is-half">
-                <strong>Really Scary Place</strong> <small>Admin</small>
+                <strong style="color:#8d6b94;">{{place.placeName}}</strong>
               </div>
               <div class="column is-half">
                 <b-rate class="is-pulled-right"
@@ -19,39 +19,45 @@
                   custom-text=""></b-rate>
               </div>
               <div class="column">
-                <small>Walmart, Austin, TX</small>
+                <small>{{place.address}}</small>
               </div>
             </div>
-                          This place is really spooky and scary and I don't like it cause
-            it's spooky and scary and there are really ugly things that pop
-            out of nowhere and scare me and spook me. i'm pretty sure this
-            place is haunted and i don't want to go bck nd you shouldn't
-            either.
+            {{place.description}}
         </div>
-        <!-- <nav class="level is-mobile">
+        <nav class="level is-mobile">
           <div class="level-left">
-            <a class="level-item">
-              <span class="icon is-small"><i class="fas fa-reply"></i></span>
-            </a>
-            <a class="level-item">
-              <span class="icon is-small"><i class="fas fa-retweet"></i></span>
-            </a>
-            <a class="level-item">
-              <span class="icon is-small"><i class="fas fa-heart"></i></span>
-            </a>
+            <p class="level-item">
+              <small>Submitted by: {{place.email}}</small>
+            </p>
           </div>
-        </nav> -->
+          <div class="level-right">
+            <router-link class="level-item" :to="{ name: 'edit', params: { id: place.placeId } }">
+              <span class="icon is-small"><i class="fas fa-edit"></i></span>
+            </router-link>
+          </div>
+        </nav>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue';
+import Component from 'vue-class-component';
+import Place from '@/types/Place';
 
-};
+@Component({
+  props: {
+    place: Object as () => Place,
+  },
+})
+export default class EditPlace extends Vue {
+  place!: Place;
+}
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+small {
+  color: #777777;
+}
 </style>

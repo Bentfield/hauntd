@@ -1,25 +1,31 @@
 <template>
   <div class="search-list">
     <br />
-    <SearchListItem></SearchListItem>
-    <SearchListItem></SearchListItem>
-    <SearchListItem></SearchListItem>
+    <SearchListItem
+      v-for="place in places"
+      v-bind:key="place.place_id"
+      :place="place">
+    </SearchListItem>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
+import Component from 'vue-class-component';
+import { AppModule } from '@/store/modules/app'
 import SearchListItem from '@/components/SearchListItem.vue';
 
-export default {
+@Component({
   components: {
     SearchListItem,
   },
-  data() {
-    return {
-      items: [1, 2, 3, 4, 5],
-    };
-  },
-};
+})
+export default class EditPlace extends Vue {
+  
+  get places() {
+    return AppModule.places;
+  }
+}
 </script>
 
 <style lang="scss">

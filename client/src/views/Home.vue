@@ -2,7 +2,7 @@
   <section class="section home">
     <div class="container search-banner">
       <div class="column is-half is-offset-one-quarter">
-        <h1 class="title">Spooky Search</h1>
+        <h1 class="title has-text-centered">Spooky Search</h1>
         <SearchBar></SearchBar>
         <SearchList></SearchList>
       </div>
