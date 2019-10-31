@@ -8,6 +8,7 @@
         size="is-medium"
         expanded
         v-model="query"
+        @keyup.native.enter="search"
       ></b-input>
       <p class="control">
         <button class="button is-primary is-medium" @click="search">Boo</button>
