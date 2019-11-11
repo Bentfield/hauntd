@@ -10,9 +10,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
-import { AppModule } from '@/store/modules/app'
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import AppModule from '@/store/modules/app';
 import SearchListItem from '@/components/SearchListItem.vue';
 
 @Component({
@@ -21,7 +20,6 @@ import SearchListItem from '@/components/SearchListItem.vue';
   },
 })
 export default class EditPlace extends Vue {
-  
   get places() {
     return AppModule.places;
   }

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { IAppState } from '@/store/modules/app';
+import { IAppState } from '@/store/modules/IAppState';
 
 Vue.use(Vuex);
 

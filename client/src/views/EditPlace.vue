@@ -63,8 +63,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 import Place from '@/types/Place';
 import httpClient from '@/services/api';
 
@@ -74,7 +73,7 @@ import httpClient from '@/services/api';
   },
 })
 export default class EditPlace extends Vue {
-  id!: Number;
+  @Prop(Number) readonly id: number | undefined;
 
   place: Place = {
     placeId: -1,

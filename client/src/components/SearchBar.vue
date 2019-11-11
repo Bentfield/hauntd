@@ -29,9 +29,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
-import { AppModule } from '@/store/modules/app'
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import AppModule from '@/store/modules/app';
 
 @Component
 export default class SearchBar extends Vue {

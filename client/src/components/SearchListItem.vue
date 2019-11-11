@@ -15,7 +15,6 @@
               <div class="column is-half">
                 <b-rate class="is-pulled-right"
                   icon-pack="fas"
-                  @change="success"
                   custom-text=""></b-rate>
               </div>
               <div class="column">
@@ -42,8 +41,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 import Place from '@/types/Place';
 
 @Component({
