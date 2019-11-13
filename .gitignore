@@ -1,3 +1,7 @@
 .DS_Store
 .python-version
 .vscode
+.idea
+__pycache__
+
+/server/out

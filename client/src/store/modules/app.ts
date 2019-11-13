@@ -16,17 +16,17 @@ class App extends VuexModule implements IAppState {
     }
 
     @Action
-    public SearchPlaces(name: string) {
-      httpClient.get(`/place?place_name=${name}`)
+    public SearchPlaces(query: string) {
+      httpClient.get(`/place/${query}`)
         .then((response) => {
           const place : Place = {
-            placeId: response.data[0],
-            email: response.data[1],
-            placeName: response.data[2],
-            address: response.data[3],
-            latLong: response.data[4],
-            avgRating: response.data[5],
-            description: response.data[6],
+            placeId: response.data.placeId,
+            email: response.data.email,
+            placeName: response.data.place_name,
+            address: response.data.address,
+            latLong: response.data.lat_long,
+            avgRating: response.data.avg_rating,
+            description: response.data.description,
           };
           this.SET_PLACES([place]);
         })

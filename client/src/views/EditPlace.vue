@@ -87,30 +87,30 @@ export default class EditPlace extends Vue {
 
   public save(): void {
     if (!this.isNew) {
-      httpClient.patch(`/place?place_id=${this.place.placeId}`, {
+      httpClient.patch(`/place/${this.place.placeId}`, {
         place_name: this.place.placeName,
         description: this.place.description,
-        location_string: this.place.address,
+        address: this.place.address,
       }).then((response) => {
-        console.log(response);
+        //
       });
     } else {
       httpClient.post('/place', {
         email: 'test@gmail.com',
         place_name: this.place.placeName,
-        location_string: this.place.address,
+        address: this.place.address,
         description: this.place.description,
 
       }).then((response) => {
-        console.log(response);
+        //
       });
     }
   }
 
   public deletePlace(): void {
-    httpClient.delete(`/place?place_id=${this.id}`)
+    httpClient.delete(`/place/${this.id}`)
       .then((response) => {
-        console.log(response);
+        //
       });
   }
 
@@ -119,15 +119,15 @@ export default class EditPlace extends Vue {
   }
 
   created() {
-    httpClient.get(`/place?place_id=${this.id}`)
+    httpClient.get(`/place/${this.id}`)
       .then((response) => {
-        [this.place.placeId,
-          this.place.email,
-          this.place.placeName,
-          this.place.address,
-          this.place.latLong,
-          this.place.avgRating,
-          this.place.description] = response.data;
+        this.place.placeId = response.data.place_id;
+        this.place.placeName = response.data.place_name;
+        this.place.email = response.data.email;
+        this.place.address = response.data.address;
+        this.place.latLong = response.data.lat_long;
+        this.place.avgRating = response.data.avg_rating;
+        this.place.description = response.data.description;
       });
   }
 }
