@@ -1,6 +1,7 @@
 <template>
   <section>
     <div class="container">
+      <b-loading :active.sync="isLoading"></b-loading>
       <div class="column is-half is-offset-one-quarter">
         <div class="box editPlace">
           <h1 v-if="isNew" class="title">Add Place</h1>
@@ -47,10 +48,14 @@
             <div class="level-left" />
             <div class="level-right">
               <a class="level-item buttons">
-                <b-button class="is-success" @click="save">
+                <b-button v-bind:class="[saving ? 'is-loading' : '', 'is-success']" @click="save">
                   Save
                 </b-button>
-                <b-button class="is-danger" icon-left="trash" v-if="!isNew" @click="deletePlace">
+                <b-button v-bind:class="[deleting ? 'is-loading' : '', 'is-danger']"
+                  icon-left="trash"
+                  v-if="!isNew"
+                  @click="deletePlace"
+                >
                   Delete
                 </b-button>
               </a>
@@ -66,6 +71,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import Place from '@/types/Place';
 import httpClient from '@/services/api';
+import AppModule from '@/store/modules/app';
 
 @Component({
   props: {
@@ -74,6 +80,12 @@ import httpClient from '@/services/api';
 })
 export default class EditPlace extends Vue {
   @Prop(Number) readonly id: number | undefined;
+
+  saving: boolean = false;
+
+  deleting: boolean = false;
+
+  isLoading: boolean = false;
 
   place: Place = {
     placeId: -1,
@@ -86,14 +98,27 @@ export default class EditPlace extends Vue {
   }
 
   public save(): void {
+    this.saving = true;
     if (!this.isNew) {
       httpClient.patch(`/place/${this.place.placeId}`, {
         place_name: this.place.placeName,
         description: this.place.description,
         address: this.place.address,
       }).then((response) => {
-        //
-      });
+        this.$buefy.toast.open({
+          message: 'Successfully saved changes.',
+          type: 'is-success',
+        });
+      })
+        .catch(() => {
+          this.$buefy.toast.open({
+            message: 'Error encountered on save.',
+            type: 'is-danger',
+          });
+        })
+        .finally(() => {
+          this.saving = false;
+        });
     } else {
       httpClient.post('/place', {
         email: 'test@gmail.com',
@@ -102,15 +127,35 @@ export default class EditPlace extends Vue {
         description: this.place.description,
 
       }).then((response) => {
-        //
-      });
+        this.$buefy.toast.open({
+          message: 'Successfully created new place.',
+          type: 'is-success',
+        });
+      })
+        .catch(() => {
+          this.$buefy.toast.open({
+            message: 'Error encountered on save.',
+            type: 'is-danger',
+          });
+        })
+        .finally(() => {
+          this.saving = false;
+        });
     }
   }
 
   public deletePlace(): void {
+    this.deleting = true;
     httpClient.delete(`/place/${this.id}`)
       .then((response) => {
-        //
+        this.deleting = false;
+        AppModule.ClearPlaces();
+        this.$router.push({ name: 'home' }, () => {
+          this.$buefy.toast.open({
+            message: 'Deleted place successfully.',
+            type: 'is-success',
+          });
+        });
       });
   }
 
@@ -119,16 +164,20 @@ export default class EditPlace extends Vue {
   }
 
   created() {
-    httpClient.get(`/place/${this.id}`)
-      .then((response) => {
-        this.place.placeId = response.data.place_id;
-        this.place.placeName = response.data.place_name;
-        this.place.email = response.data.email;
-        this.place.address = response.data.address;
-        this.place.latLong = response.data.lat_long;
-        this.place.avgRating = response.data.avg_rating;
-        this.place.description = response.data.description;
-      });
+    if (this.id) {
+      this.isLoading = true;
+      httpClient.get(`/place/${this.id}`)
+        .then((response) => {
+          this.place.placeId = response.data.place_id;
+          this.place.placeName = response.data.place_name;
+          this.place.email = response.data.email;
+          this.place.address = response.data.address;
+          this.place.latLong = response.data.lat_long;
+          this.place.avgRating = response.data.avg_rating;
+          this.place.description = response.data.description;
+          this.isLoading = false;
+        });
+    }
   }
 }
 </script>

@@ -20,7 +20,7 @@ class App extends VuexModule implements IAppState {
       httpClient.get(`/place/${query}`)
         .then((response) => {
           const place : Place = {
-            placeId: response.data.placeId,
+            placeId: response.data.place_id,
             email: response.data.email,
             placeName: response.data.place_name,
             address: response.data.address,
@@ -33,6 +33,11 @@ class App extends VuexModule implements IAppState {
         .catch(() => {
           this.SET_PLACES([]);
         });
+    }
+
+    @Action
+    public ClearPlaces() {
+      this.SET_PLACES([]);
     }
 }
 

@@ -14,7 +14,7 @@ def get_place(id, conn):
 def delete_place(id, conn):
     try:
         with conn.cursor() as cursor:
-            query = "DELETE FROM PLACE WHERE place_id = %s"
+            query = "DELETE FROM Place WHERE place_id = %s"
             cursor.execute(query, (id,))
             conn.commit()
             return Response("")
@@ -26,7 +26,7 @@ def post_place(request, conn):
     json = request.json_body
     email = json["email"]
     place_name = json["place_name"]
-    location_string = json["location_string"]
+    address = json["address"]
     description = json["description"]
     if "latitude" in json and "longitude" in json:
         lat_long = f"{json['latitude']} {json['longitude']}"
@@ -34,8 +34,8 @@ def post_place(request, conn):
         lat_long = None
     try:
         with conn.cursor() as cursor:
-            query = "INSERT INTO PLACE (email, place_name, address, lat_long, avg_rating, description) VALUES (%s, %s, %s, %s, %s, %s)"
-            cursor.execute(query, (email, place_name, location_string, lat_long, 0, description))
+            query = "INSERT INTO Place (email, place_name, address, lat_long, avg_rating, description) VALUES (%s, %s, %s, %s, %s, %s)"
+            cursor.execute(query, (email, place_name, address, lat_long, 0, description))
             conn.commit()
             return Response("")
     finally:
