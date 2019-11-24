@@ -32,9 +32,11 @@
                     <a class="button is-primary">
                         <strong>Sign up</strong>
                     </a>
-                    <a class="button is-light">
+                    <!-- <a class="button is-light">
                         Log in
-                    </a>
+                    </a> -->
+                    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                    <a href="#" onclick="signOut();">Sign out</a>
                 </div>
             </b-navbar-item>
         </template>
