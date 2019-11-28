@@ -1,11 +1,14 @@
-from chalice import Chalice, Response
+from chalice import Chalice, Response, AuthResponse
 from chalicelib import place
 import pymysql.cursors
 import base64
 import boto3
 import os
+import auth
+import logging
 
 app = Chalice(app_name='hauntd')
+app.log.setLevel(logging.DEBUG)
 kms = boto3.client('kms')
 
 
@@ -44,16 +47,25 @@ def get_place(id: int) -> Response:
 
 @app.route('/place/{id}', methods=['DELETE'], cors=True)
 def delete_place(id: int) -> Response:
+    decoded = auth.decode_jwt_token(app.current_request.headers['authorization'])
+    if decoded is None:
+        return Response(body="", status_code=401)
     return place.delete_place(id, get_conn())
 
 
 @app.route('/place', methods=['POST'], cors=True)
 def post_place() -> Response:
+    decoded = auth.decode_jwt_token(app.current_request.headers['authorization'])
+    if decoded is None:
+        return Response(body="", status_code=401)
     request = app.current_request
     return place.post_place(request, get_conn())
 
 
 @app.route('/place/{id}', methods=['PATCH'], cors=True)
 def patch_place(id: int) -> Response:
+    decoded = auth.decode_jwt_token(app.current_request.headers['authorization'])
+    if decoded is None:
+        return Response(body="", status_code=401)
     request = app.current_request
     return place.patch_place(id, request, get_conn())

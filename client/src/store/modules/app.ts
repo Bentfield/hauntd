@@ -10,6 +10,16 @@ import httpClient from '@/services/api';
 class App extends VuexModule implements IAppState {
     public places : Place[] = [];
 
+    @Action
+    public SignIn(token: String) {
+      httpClient.defaults.headers["Authorization"] = token.split(',')[0]; //eslint-disable-line
+    }
+
+    @Action
+    public SignOut() {
+      delete httpClient.defaults.headers["Authorization"]; //eslint-disable-line
+    }
+
     @Mutation
     private SET_PLACES(places: Place[]) {
       this.places = places;

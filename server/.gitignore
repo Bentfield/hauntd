@@ -1,2 +1,5 @@
+# Misc
+
 .chalice/deployments/
 .chalice/venv/
+credentials*.json
