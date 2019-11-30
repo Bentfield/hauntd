@@ -41,7 +41,7 @@ export default class SearchBar extends Vue {
   }
 
   editPlace() {
-    this.$router.push({ name: 'edit_place' });
+    this.$router.push('edit');
   }
 
   search() {

@@ -19,16 +19,10 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
   },
   {
-    path: '/place/edit/:id?',
-    name: 'edit_place',
+    path: '/edit/:id?',
+    name: 'edit',
     props: true,
-    component: () => import(/* webpackChunkName: "edit_place" */ '../views/EditPlace.vue'),
-  },
-  {
-    path: '/place/:id?',
-    name: 'view_place',
-    props: true,
-    component: () => import(/* webpackChunkName: "view_place" */ '../views/ViewPlace.vue'),
+    component: () => import(/* webpackChunkName: "edit" */ '../views/EditPlace.vue'),
   },
 ];
 

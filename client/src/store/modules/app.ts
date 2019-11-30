@@ -24,8 +24,7 @@ class App extends VuexModule implements IAppState {
             email: response.data.email,
             placeName: response.data.place_name,
             address: response.data.address,
-            latitude: response.data.latitude,
-            longitude: response.data.longitude,
+            latLong: response.data.lat_long,
             avgRating: response.data.avg_rating,
             description: response.data.description,
           };
