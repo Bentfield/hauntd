@@ -10,9 +10,7 @@
         <div class="content">
             <div class="columns is-gapless is-multiline">
               <div class="column is-half">
-                <router-link :to="{ name: 'view_place', params: { id: place.placeId } }">
-                  <strong class="placeName">{{place.placeName}}</strong>
-                </router-link>
+                <strong style="color:#8d6b94;">{{place.placeName}}</strong>
               </div>
               <div class="column is-half">
                 <b-rate class="is-pulled-right"
@@ -32,10 +30,7 @@
             </p>
           </div>
           <div class="level-right">
-            <router-link
-              class="level-item"
-              :to="{ name: 'edit_place', params: { id: place.placeId } }"
-            >
+            <router-link class="level-item" :to="{ name: 'edit', params: { id: place.placeId } }">
               <span class="icon is-small"><i class="fas fa-edit"></i></span>
             </router-link>
           </div>
@@ -62,13 +57,5 @@ export default class EditPlace extends Vue {
 <style lang="scss" scoped>
 small {
   color: #777777;
-}
-
-.placeName {
-  color: #8d6b94;
-}
-
-.placeName:hover {
-  color: #db504a;
 }
 </style>

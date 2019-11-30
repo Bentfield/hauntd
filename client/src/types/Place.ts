@@ -3,8 +3,7 @@ interface Place {
     placeName: string;
     email: string;
     address: string;
-    latitude: number;
-    longitude: number;
+    latLong: string;
     avgRating: number;
     description: string;
 }

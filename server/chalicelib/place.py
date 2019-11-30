@@ -28,12 +28,14 @@ def post_place(request, conn):
     place_name = json["place_name"]
     address = json["address"]
     description = json["description"]
-    latitude = json["latitude"] if "latitude" in json else None
-    longitude = json["longitude"] if "longitude" in json else None
+    if "latitude" in json and "longitude" in json:
+        lat_long = f"{json['latitude']} {json['longitude']}"
+    else:
+        lat_long = None
     try:
         with conn.cursor() as cursor:
-            query = "INSERT INTO Place (email, place_name, address, latitude, longitude, avg_rating, description) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-            cursor.execute(query, (email, place_name, address, latitude, longitude, 0, description))
+            query = "INSERT INTO Place (email, place_name, address, lat_long, avg_rating, description) VALUES (%s, %s, %s, %s, %s, %s)"
+            cursor.execute(query, (email, place_name, address, lat_long, 0, description))
             conn.commit()
             return Response("")
     finally:
@@ -41,7 +43,9 @@ def post_place(request, conn):
 
 def patch_place(id, request, conn):
     json = request.json_body
-    UPDATEABLE = set(["place_name", "address", "description", "latitude", "longitude"])
+    UPDATEABLE = set(["place_name", "address", "description", "lat_long"])
+    if "latitude" in json and "longitude" in json:
+        json["lat_long"] = f"{json['latitude']} {json['longitude']}"
     try:
         with conn.cursor() as cursor:
             for k, v in json.items():
