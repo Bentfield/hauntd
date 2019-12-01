@@ -1,5 +1,5 @@
 from chalice import Chalice, Response
-from chalicelib import place
+from chalicelib import place, rating
 import pymysql.cursors
 import base64
 import boto3
@@ -57,3 +57,14 @@ def post_place() -> Response:
 def patch_place(id: int) -> Response:
     request = app.current_request
     return place.patch_place(id, request, get_conn())
+
+
+@app.route('/rating/{id}', methods=['GET'], cors=True)
+def get_place(id: int) -> Response:
+    return rating.get_rating(id, get_conn())
+
+
+@app.route('/rating', methods=['POST'], cors=True)
+def post_rating() -> Response:
+    request = app.current_request
+    return rating.post_rating(request, get_conn())

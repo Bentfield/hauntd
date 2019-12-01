@@ -3,7 +3,7 @@ from chalice import Response
 def get_place(id, conn):
     try:
         with conn.cursor() as cursor:
-            query = "SELECT * FROM Place WHERE place_id = %s"
+            query = "SELECT * FROM PlaceRating WHERE place_id = %s"
             cursor.execute(query, (id,))
             result = cursor.fetchone()
             return result
@@ -38,6 +38,7 @@ def post_place(request, conn):
             return Response("")
     finally:
         conn.close()
+
 
 def patch_place(id, request, conn):
     json = request.json_body

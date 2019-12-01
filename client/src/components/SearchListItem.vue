@@ -15,9 +15,11 @@
                 </router-link>
               </div>
               <div class="column is-half">
-                <b-rate class="is-pulled-right"
-                  icon-pack="fas"
-                  custom-text=""></b-rate>
+                <PlaceRater class="is-pulled-right"
+                  :placeId="place.placeId"
+                  :avgRating="place.avgRating"
+                >
+                </PlaceRater>
               </div>
               <div class="column">
                 <small>{{place.address}}</small>
@@ -47,11 +49,15 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
+import PlaceRater from '@/components/PlaceRater.vue';
 import Place from '@/types/Place';
 
 @Component({
   props: {
     place: Object as () => Place,
+  },
+  components: {
+    PlaceRater,
   },
 })
 export default class EditPlace extends Vue {
