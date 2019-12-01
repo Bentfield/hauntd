@@ -17,9 +17,9 @@ import httpClient from '@/services/api';
 
 @Component
 export default class PlaceRater extends Vue {
-  @Prop(Number) readonly placeId: number;
+  @Prop(Number) readonly placeId!: number;
 
-  @Prop(Number) readonly avgRating: number;
+  @Prop(Number) readonly avgRating!: number;
 
   private localRating: number | undefined = undefined;
 
