@@ -17,6 +17,7 @@
           </div>
           <div class="column">
             <h2 class="has-text-weight-bold is-size-5">Description</h2>
+            <p><small><b>Submitted by:</b> {{ place.email }}</small></p>
             <p>{{ place.description }}</p>
           </div>
         </div>
