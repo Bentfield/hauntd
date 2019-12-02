@@ -10,14 +10,25 @@ import httpClient from '@/services/api';
 class App extends VuexModule implements IAppState {
     public places : Place[] = [];
 
-    @Action
-    public SignIn(token: String) {
-      httpClient.defaults.headers["Authorization"] = token.split(',')[0]; //eslint-disable-line
+    public loggedIn: boolean = false;
+
+    public email: string = '';
+
+    @Mutation
+    public SignIn(user: any) {
+      httpClient.defaults.headers["Authorization"] = user.token.split(',')[0]; //eslint-disable-line
+      localStorage.setItem('idToken', user.token);
+      localStorage.setItem('email', user.email);
+      this.email = user.email;
+      this.loggedIn = true;
     }
 
-    @Action
+    @Mutation
     public SignOut() {
       delete httpClient.defaults.headers["Authorization"]; //eslint-disable-line
+      localStorage.clear();
+      this.loggedIn = false;
+      this.email = '';
     }
 
     @Mutation
@@ -29,6 +40,7 @@ class App extends VuexModule implements IAppState {
     public SearchPlaces(query: string) {
       httpClient.get(`/place/${query}`)
         .then((response) => {
+          console.log(response);
           const place : Place = {
             placeId: response.data.place_id,
             email: response.data.email,
@@ -40,7 +52,8 @@ class App extends VuexModule implements IAppState {
           };
           this.SET_PLACES([place]);
         })
-        .catch(() => {
+        .catch((e) => {
+          this.SignOut();
           this.SET_PLACES([]);
         });
     }

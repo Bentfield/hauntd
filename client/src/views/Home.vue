@@ -1,6 +1,5 @@
 <template>
   <section class="section home">
-    <NavBar></NavBar>
     <div class="container search-banner">
       <div class="column is-half is-offset-one-quarter">
         <h1 class="title has-text-centered">Spooky Search</h1>
@@ -13,14 +12,12 @@
 
 <script>
 // @ is an alias to /src
-import NavBar from '@/components/NavBar.vue';
 import SearchBar from '@/components/SearchBar.vue';
 import SearchList from '@/components/SearchList.vue';
 
 export default {
   name: 'home',
   components: {
-    NavBar,
     SearchBar,
     SearchList,
   },

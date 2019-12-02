@@ -29,7 +29,7 @@
               <small>Submitted by: {{place.email}}</small>
             </p>
           </div>
-          <div class="level-right">
+          <div class="level-right" v-if="allowEdit">
             <router-link class="level-item" :to="{ name: 'edit', params: { id: place.placeId } }">
               <span class="icon is-small"><i class="fas fa-edit"></i></span>
             </router-link>
@@ -43,14 +43,19 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import Place from '@/types/Place';
+import AppModule from '@/store/modules/app';
 
 @Component({
   props: {
     place: Object as () => Place,
   },
 })
-export default class EditPlace extends Vue {
+export default class SearchListItem extends Vue {
   place!: Place;
+
+  get allowEdit() {
+    return AppModule.email === this.place.email;
+  }
 }
 </script>
 

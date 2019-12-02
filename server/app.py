@@ -1,10 +1,9 @@
 from chalice import Chalice, Response, AuthResponse
-from chalicelib import place
+from chalicelib import place, auth
 import pymysql.cursors
 import base64
 import boto3
 import os
-import auth
 import logging
 
 app = Chalice(app_name='hauntd')
@@ -40,32 +39,46 @@ def index():
     return {'hello': 'world'}
 
 
+@app.authorizer()
+def jwt_auth(auth_request):
+    token = auth_request.token
+    decoded = auth.decode_jwt_token(token)
+    app.log.debug(decoded)
+    if decoded is not None:
+        return AuthResponse(routes=['*'], principal_id=(decoded['email'], decoded['name']))
+    else:
+        return AuthResponse(routes=[], principal_id='')
+
+
+def get_user_email(request):
+    return request.context['authorizer']['principalId'][0]
+
+
+def get_user_name(request):
+    return request.context['authorizer']['principalId'][1]
+
+
 @app.route('/place/{id}', methods=['GET'], cors=True)
 def get_place(id: int) -> Response:
     return place.get_place(id, get_conn())
 
 
-@app.route('/place/{id}', methods=['DELETE'], cors=True)
+@app.route('/place/{id}', methods=['DELETE'], cors=True, authorizer=jwt_auth)
 def delete_place(id: int) -> Response:
-    decoded = auth.decode_jwt_token(app.current_request.headers['authorization'])
-    if decoded is None:
-        return Response(body="", status_code=401)
-    return place.delete_place(id, get_conn())
+    email = get_user_email(app.current_request)
+    return place.delete_place(id, email, get_conn())
 
 
-@app.route('/place', methods=['POST'], cors=True)
+@app.route('/place', methods=['POST'], cors=True, authorizer=jwt_auth)
 def post_place() -> Response:
-    decoded = auth.decode_jwt_token(app.current_request.headers['authorization'])
-    if decoded is None:
-        return Response(body="", status_code=401)
     request = app.current_request
-    return place.post_place(request, get_conn())
+    username = get_user_name(request)
+    email = get_user_email(request)
+    return place.post_place(request, username, email, get_conn())
 
 
-@app.route('/place/{id}', methods=['PATCH'], cors=True)
+@app.route('/place/{id}', methods=['PATCH'], cors=True, authorizer=jwt_auth)
 def patch_place(id: int) -> Response:
-    decoded = auth.decode_jwt_token(app.current_request.headers['authorization'])
-    if decoded is None:
-        return Response(body="", status_code=401)
     request = app.current_request
-    return place.patch_place(id, request, get_conn())
+    email = get_user_email(request)
+    return place.patch_place(id, request, email, get_conn())
