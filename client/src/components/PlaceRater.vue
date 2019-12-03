@@ -6,6 +6,7 @@
     v-model="rating"
     @change="userRate"
     custom-text=""
+    :disabled="!loggedIn"
   >
   </b-rate>
 </template>
@@ -13,6 +14,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import Place from '@/types/Place';
+import AppModule from '@/store/modules/app';
 import httpClient from '@/services/api';
 
 @Component
@@ -31,6 +33,10 @@ export default class PlaceRater extends Vue {
     this.localRating = value;
   }
 
+  get loggedIn(): boolean {
+    return AppModule.loggedIn;
+  }
+
   userRate(value:Number) {
     httpClient.post('rating', {
       place_id: this.placeId,
@@ -39,6 +45,11 @@ export default class PlaceRater extends Vue {
       this.$buefy.toast.open({
         message: 'Successfully submitted rating.',
         type: 'is-success',
+      });
+    }).catch((error) => {
+      this.$buefy.toast.open({
+        message: 'You must be logged in to rate places.',
+        type: 'is-danger',
       });
     });
   }

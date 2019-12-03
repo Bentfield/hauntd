@@ -40,7 +40,6 @@ class App extends VuexModule implements IAppState {
     public SearchPlaces(query: string) {
       httpClient.get(`/place/${query}`)
         .then((response) => {
-          console.log(response);
           const place : Place = {
             placeId: response.data.place_id,
             email: response.data.email,
