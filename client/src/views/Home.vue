@@ -25,6 +25,12 @@ export default {
 </script>
 
 <style lang="scss">
+.home {
+  padding-top: 0;
+  padding-right: 0;
+  padding-left: 0;
+}
+
 .search-banner .title {
   color: #fff;
 }

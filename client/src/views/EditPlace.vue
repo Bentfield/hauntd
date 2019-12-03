@@ -102,7 +102,7 @@ export default class EditPlace extends Vue {
           type: 'is-success',
         });
       })
-        .catch(() => {
+        .catch((e) => {
           this.$buefy.toast.open({
             message: 'Error encountered on save.',
             type: 'is-danger',
@@ -110,6 +110,7 @@ export default class EditPlace extends Vue {
         })
         .finally(() => {
           this.saving = false;
+          AppModule.ClearPlaces();
         });
     } else {
       httpClient.post('/place', {

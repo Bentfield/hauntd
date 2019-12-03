@@ -33,11 +33,8 @@
               <small>Submitted by: {{place.email}}</small>
             </p>
           </div>
-          <div class="level-right">
-            <router-link
-              class="level-item"
-              :to="{ name: 'edit_place', params: { id: place.placeId } }"
-            >
+          <div class="level-right" v-if="allowEdit">
+            <router-link class="level-item" :to="{ name: 'edit', params: { id: place.placeId } }">
               <span class="icon is-small"><i class="fas fa-edit"></i></span>
             </router-link>
           </div>
@@ -51,6 +48,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import PlaceRater from '@/components/PlaceRater.vue';
 import Place from '@/types/Place';
+import AppModule from '@/store/modules/app';
 
 @Component({
   props: {
@@ -60,8 +58,12 @@ import Place from '@/types/Place';
     PlaceRater,
   },
 })
-export default class EditPlace extends Vue {
+export default class SearchListItem extends Vue {
   place!: Place;
+
+  get allowEdit() {
+    return AppModule.email === this.place.email;
+  }
 }
 </script>
 
