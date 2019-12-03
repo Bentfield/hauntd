@@ -39,11 +39,11 @@ def post_place(request, username, email, conn):
         longitude = None
     try:
         with conn.cursor() as cursor:
-            query = "INSERT INTO User (user_name, email) VALUES (%s, %s)"
-            cursor.execute(query, (username, email))
+            create_user = "INSERT IGNORE INTO User (user_name, email) VALUES (%s, %s)"
+            cursor.execute(create_user, (username, email))
             conn.commit()
-            query = "INSERT INTO Place (email, place_name, address, latitude, longitude, avg_rating, description) VALUES (%s, %s, %s, %s, %s, %s)"
-            cursor.execute(query, (email, place_name, address, latitude, longitude, 0, description))
+            query = "INSERT INTO Place (email, place_name, address, latitude, longitude, description) VALUES (%s, %s, %s, %s, %s, %s)"
+            cursor.execute(query, (email, place_name, address, latitude, longitude, description))
             conn.commit()
             return Response("")
     finally:
