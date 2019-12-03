@@ -10,7 +10,9 @@
         <div class="content">
             <div class="columns is-gapless is-multiline">
               <div class="column is-half">
-                <strong style="color:#8d6b94;">{{place.placeName}}</strong>
+                <router-link :to="{ name: 'view_place', params: { id: place.placeId } }">
+                  <strong class="placeName">{{place.placeName}}</strong>
+                </router-link>
               </div>
               <div class="column is-half">
                 <b-rate class="is-pulled-right"
@@ -62,5 +64,13 @@ export default class SearchListItem extends Vue {
 <style lang="scss" scoped>
 small {
   color: #777777;
+}
+
+.placeName {
+  color: #8d6b94;
+}
+
+.placeName:hover {
+  color: #db504a;
 }
 </style>

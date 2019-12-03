@@ -87,15 +87,7 @@ export default class EditPlace extends Vue {
 
   isLoading: boolean = false;
 
-  place: Place = {
-    placeId: -1,
-    placeName: '',
-    email: '',
-    address: '',
-    latLong: '',
-    avgRating: 0,
-    description: '',
-  }
+  place: Place = {} as any;
 
   public save(): void {
     this.saving = true;
@@ -173,7 +165,8 @@ export default class EditPlace extends Vue {
           this.place.placeName = response.data.place_name;
           this.place.email = response.data.email;
           this.place.address = response.data.address;
-          this.place.latLong = response.data.lat_long;
+          this.place.latitude = response.data.latitude;
+          this.place.longitude = response.data.longitude;
           this.place.avgRating = response.data.avg_rating;
           this.place.description = response.data.description;
           this.isLoading = false;

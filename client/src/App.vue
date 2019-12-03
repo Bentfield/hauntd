@@ -38,8 +38,6 @@
 // Import Bulma's core
 @import "~bulma/sass/utilities/_all";
 
-// Set your colors
-// $primary: #43aa8b;
 $primary: #db504a;
 $primary-invert: findColorInvert($primary);
 $twitter: #4099FF;
