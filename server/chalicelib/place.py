@@ -15,13 +15,10 @@ def get_place(id, conn):
 def delete_place(id, email, conn):
     try:
         with conn.cursor() as cursor:
-            query = "SELECT email FROM Place WHERE place_id = %s"
-            cursor.execute(query, (id,))
-            result = cursor.fetchone()
-            if result['email'] == email:
-                query = "DELETE FROM Place WHERE place_id = %s"
-                cursor.execute(query, (id,))
-                conn.commit()
+            query = "DELETE FROM Place WHERE place_id = %s AND email = %s"
+            rows = cursor.execute(query, (id, email))
+            conn.commit()
+            if rows > 0:
                 return Response("")
             else:
                 return Response("", status_code=403)
@@ -58,15 +55,12 @@ def patch_place(id, request, email, conn):
     UPDATEABLE = set(["place_name", "address", "description", "latitude", "longitude"])
     try:
         with conn.cursor() as cursor:
-            query = "SELECT email FROM Place WHERE place_id = %s"
-            cursor.execute(query, (id,))
-            result = cursor.fetchone()
-            if result['email'] == email:
-                for k, v in json.items():
-                    if k in UPDATEABLE:
-                        sqlpatch = f"UPDATE Place SET {k} = %s WHERE place_id = %s"
-                        cursor.execute(sqlpatch, (v, id))
-                conn.commit()
+            for k, v in json.items():
+                if k in UPDATEABLE:
+                    sqlpatch = f"UPDATE Place SET {k} = %s WHERE place_id = %s AND email = %s"
+                    rows = cursor.execute(sqlpatch, (v, id, email))
+            conn.commit()
+            if rows > 0:
                 return Response("")
             else:
                 return Response("", status_code=403)

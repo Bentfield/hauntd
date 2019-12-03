@@ -32,7 +32,8 @@
             </p>
           </div>
           <div class="level-right" v-if="allowEdit">
-            <router-link class="level-item" :to="{ name: 'edit', params: { id: place.placeId } }">
+            <router-link class="level-item"
+                         :to="{ name: 'edit_place', params: { id: place.placeId } }">
               <span class="icon is-small"><i class="fas fa-edit"></i></span>
             </router-link>
           </div>
