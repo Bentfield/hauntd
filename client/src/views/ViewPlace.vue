@@ -1,7 +1,7 @@
 <template>
   <section>
     <div class="container">
-      <div class="box viewPlace">
+      <div class="box viewPlace" v-if="'placeId' in place">
         <div class="columns is-multiline">
           <div class="column is-full">
             <h1>Map</h1> <!--Insert the map here for Google Maps-->
@@ -17,8 +17,8 @@
           </div>
           <div class="column">
             <h2 class="has-text-weight-bold is-size-5">Description</h2>
-            <p><small><b>Submitted by:</b> {{ place.userName }}</small></p>
             <p>{{ place.description }}</p>
+            <p><small><b>Submitted by:</b> {{ place.userName }}</small></p>
           </div>
         </div>
       </div>
