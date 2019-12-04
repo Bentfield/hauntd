@@ -156,8 +156,9 @@ def get_filter(query_string, unfiltered, conn, col):
     user_long = json.loads(query_string.get('location'))['longitude']
     email = query_string.get('createdBy')
     if int(user_lat) == -1 or int(radius) == 0:
-        while len(unfiltered) > 25:
-            unfiltered.popitem()
+        if unfiltered is not None:
+            while len(unfiltered) > 25:
+                unfiltered.popitem()
     ids = []
     if unfiltered is not None:
         for item in unfiltered.keys():
@@ -169,9 +170,10 @@ def get_filter(query_string, unfiltered, conn, col):
             if int(user_lat) == -1 or int(radius) == 0:
                 sqlfilter = ("SELECT DISTINCT * "
                     "FROM PlaceUser "
+                    "WHERE email = %s "
                     "LIMIT 25;")
 
-                rows = cursor.execute(sqlfilter)
+                rows = cursor.execute(sqlfilter, (email))
             else:
                 sqlfilter = ("SELECT DISTINCT *,"
                     "(3959 * "
