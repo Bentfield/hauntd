@@ -1,11 +1,11 @@
 <template>
   <div class="gmap">
-
     <GmapMap
       :center= "{ lat: 0, lng: 0 }"
       :zoom="15"
       ref="mapRef"
       v-show="!(center.lat === 0 && center.lng === 0)"
+      style="margin:auto;"
     >
       <GmapMarker
         v-for="(item, index) in markers"
