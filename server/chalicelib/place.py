@@ -2,10 +2,10 @@ from chalice import Response
 from pymongo import MongoClient
 
 def description_search(keyword):
-    client = MongoClient("mongodb+srv://ssethia2:hauntd411@hauntdtext-ox5ai.mongodb.net/test?retryWrites=true&w=majority")
+    client = MongoClient("mongodb+srv://ssethia2:hauntd_411@hauntdtext-ox5ai.mongodb.net/test?retryWrites=true&w=majority")
 
-    db = client.Hauntd
-    col = db.haunted_places
+    db = client.hauntd_
+    col = db.hauntd_places
 
     col.create_index([("description", "text")])
 
@@ -16,8 +16,8 @@ def description_search(keyword):
 def location_search(location_name):
     client = MongoClient("mongodb+srv://ssethia2:hauntd411@hauntdtext-ox5ai.mongodb.net/test?retryWrites=true&w=majority")
 
-    db = client.Hauntd
-    col = db.haunted_places
+    db = client.hauntd_
+    col = db.hauntd_places
 
     reg_location_name = "(" + location_name + ")" +"."
 
@@ -28,14 +28,41 @@ def location_search(location_name):
 def location_exact_match(location_query):
     client = MongoClient("mongodb+srv://ssethia2:hauntd411@hauntdtext-ox5ai.mongodb.net/test?retryWrites=true&w=majority")
 
-    db = client.Hauntd
-    col = db.haunted_places
+    db = client.hauntd_
+    col = db.hauntd_places
 
-    reg_location_query = "(" + location_query + ")" +"."
-
-    docs = col.find({"location" : reg_location_query})
+    docs = col.find_one({"location" : location_query})
 
     return docs
+
+def location_and_description(query):
+    ids_to_show = []
+    num_left = 25
+
+    location_match = location_exact_match(query)
+    if location_match != None:
+        ids_to_show[0] = location_match["place_id"]
+        num_left = num_left - 1
+    
+    location_reg = location_search(query)
+    location_counter = 0
+    for doc in location_reg:
+        if location_counter == 5:
+            break
+        else:
+            ids_to_show.append(doc["place_id"])
+            location_counter = location_counter + 1
+            num_left = num_left  - 1
+    
+    description_match = description_search(query)
+    for descdoc in description_match:
+        if num_left == 0:
+            break
+        else:
+            ids_to_show.append(descdoc["place_id"])
+            num_left = num_left  - 1
+    
+    return ids_to_show
 
 def get_place(id, conn):
     try:
