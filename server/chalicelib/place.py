@@ -1,4 +1,5 @@
 from chalice import Response
+import json
 
 
 def get_place(id, conn):
@@ -42,8 +43,8 @@ def post_place(request, username, email, conn):
             create_user = "INSERT IGNORE INTO User (user_name, email) VALUES (%s, %s)"
             cursor.execute(create_user, (username, email))
             conn.commit()
-            query = "INSERT INTO Place (email, place_name, address, latitude, longitude, description) VALUES (%s, %s, %s, %s, %s, %s)"
-            cursor.execute(query, (email, place_name, address, latitude, longitude, description))
+            query = "INSERT INTO Place (email, place_name, address, latitude, longitude, avg_rating) VALUES (%s, %s, %s, %s, %s, 0)"
+            cursor.execute(query, (email, place_name, address, latitude, longitude))
             conn.commit()
             return Response("")
     finally:
@@ -66,3 +67,37 @@ def patch_place(id, request, email, conn):
                 return Response("", status_code=403)
     finally:
         conn.close()
+
+
+def get_filter(query_string, unfiltered, conn):
+    radius = query_string.get('findNear')
+    user_lat = json.loads(query_string.get('location'))['latitude']
+    user_long = json.loads(query_string.get('location'))['longitude']
+    email = query_string.get('createdBy')
+    places = []
+    if len(unfiltered) == 0:
+        try:
+            with conn.cursor() as cursor:
+                sqlfilter = ("SELECT *,"
+                    "(3959 * "
+                    "acos("
+                    "sin(radians(%s)) * "
+                    "sin(radians(latitude)) + "
+                    "cos(radians(%s)) * "
+                    "cos(radians(latitude)) * "
+                    "cos(radians(longitude) - radians(%s)))) "
+                    "AS distance "
+                    "FROM Place "
+                    "HAVING distance < %s "
+                    "ORDER BY distance")
+
+                rows = cursor.execute(sqlfilter, (user_lat, user_lat, user_long, radius))
+                for i in range(0, rows):
+                    place = cursor.fetchone()
+                    if email == '' or place['email'] == email:
+                        places.append(place)
+                conn.commit()
+                return Response(places)
+        finally:
+            conn.close()
+    # else:

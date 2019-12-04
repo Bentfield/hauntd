@@ -82,3 +82,9 @@ def patch_place(id: int) -> Response:
     request = app.current_request
     email = get_user_email(request)
     return place.patch_place(id, request, email, get_conn())
+
+@app.route('/filter', methods=['GET'], cors=True)
+def get_filter() -> Response:
+    query_string = app.current_request.query_params
+    return place.get_filter(query_string, [], get_conn())
+    # return Response("")

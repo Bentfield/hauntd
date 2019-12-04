@@ -63,6 +63,33 @@ class App extends VuexModule implements IAppState {
     public ClearPlaces() {
       this.SET_PLACES([]);
     }
+
+    @Action
+    public FilterSearch(options: any) {
+      httpClient.get('/filter', { params: options })
+        .then((response) => {
+          const places: Place[] = [];
+          console.log(response.data);
+          response.data.forEach((place: any) => {
+            places.push({
+              placeId: place.place_id,
+              email: place.email,
+              placeName: place.place_name,
+              address: place.address,
+              latitude: place.latitude,
+              longitude: place.longitude,
+              avgRating: place.avg_rating,
+              description: place.description,
+            });
+          });
+          this.SET_PLACES(places);
+        });
+    }
+
+    @Action
+    public FilterSort() {
+
+    }
 }
 
 export default getModule(App);

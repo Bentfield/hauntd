@@ -1,10 +1,15 @@
 <template>
   <section class="section home">
     <div class="container search-banner">
-      <div class="column is-half is-offset-one-quarter">
-        <h1 class="title has-text-centered">Spooky Search</h1>
-        <SearchBar></SearchBar>
-        <SearchList></SearchList>
+      <div class="columns">
+        <div class="column is-one-quarter">
+          <FilterSearch></FilterSearch>
+        </div>
+        <div class="column is-half">
+          <h1 class="title has-text-centered">Spooky Search</h1>
+          <SearchBar></SearchBar>
+          <SearchList></SearchList>
+        </div>
       </div>
     </div>
   </section>
@@ -12,6 +17,7 @@
 
 <script>
 // @ is an alias to /src
+import FilterSearch from '@/components/FilterSearch.vue';
 import SearchBar from '@/components/SearchBar.vue';
 import SearchList from '@/components/SearchList.vue';
 
@@ -20,6 +26,7 @@ export default {
   components: {
     SearchBar,
     SearchList,
+    FilterSearch,
   },
 };
 </script>
