@@ -3,10 +3,16 @@ from pymongo import MongoClient
 from collections import OrderedDict
 import json
 
-def get_spooked(col):
-    spooky_time = col.aggregate({"$sample" : {"size" : 1}})
 
-    return Response(spooky_time)
+def get_spooked(conn):
+    try:
+        with conn.cursor() as cursor:
+            query = "SELECT * FROM PlaceUser ORDER BY RAND() LIMIT 1"
+            cursor.execute(query)
+            result = cursor.fetchone()
+            return Response(result)
+    finally:
+        conn.close()
 
 
 def insert_mongo(description, location, place_id, col):

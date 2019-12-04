@@ -12,12 +12,17 @@
       ></b-input>
       <p class="control">
         <button class="button is-primary is-medium" @click="search">Boo</button>
-        <b-button type="is-danger" size="is-medium"
-          icon-pack="fas"
-          icon-right="ghost"
-        >
-            </b-button>
       </p>
+       <b-tooltip label="Give me a random spooky place."
+            position="is-top"
+            animated>
+            <b-button type="is-white"
+                icon-pack="fas"
+                icon-right="ghost"
+                size="is-medium"
+                style="margin-left:10px;"
+                @click="getSpooked"/>
+        </b-tooltip>
     </b-field>
 
     <nav class="level">
@@ -36,6 +41,7 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import AppModule from '@/store/modules/app';
+import httpClient from '@/services/api';
 
 @Component
 export default class SearchBar extends Vue {
@@ -51,6 +57,12 @@ export default class SearchBar extends Vue {
 
   search() {
     AppModule.SearchPlaces(this.query);
+  }
+
+  public getSpooked() {
+    httpClient.get('/spook').then((response) => {
+      this.$router.push({ name: 'view_place', params: { id: response.data.place_id } });
+    });
   }
 }
 </script>

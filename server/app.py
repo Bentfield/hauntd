@@ -68,7 +68,7 @@ def get_user_name(request):
 
 @app.route('/spook', methods=['GET'], cors=True)
 def get_spooked() -> Response:
-    return place.get_spooked(get_mongo_conn())
+    return place.get_spooked(get_SQL_conn())
 
 @app.route('/place', methods=['GET'], cors=True)
 def get_place() -> Response:
