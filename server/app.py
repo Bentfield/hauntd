@@ -74,7 +74,7 @@ def get_place() -> Response:
 
 @app.route('/place/{id}', methods=['GET'], cors=True)
 def get_place(id: int) -> Response:
-    return place.get_place_id(id, get_SQL_conn())
+    return place.get_place_id(id, get_SQL_conn(), get_mongo_conn())
 
 
 @app.route('/place/{id}', methods=['DELETE'], cors=True, authorizer=jwt_auth)

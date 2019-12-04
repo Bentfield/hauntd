@@ -47,12 +47,13 @@ def get_place(query_string, conn, col):
 
     return get_filter(query_string, places, conn, col)
 
-def get_place_id(id, conn):
+def get_place_id(id, conn, col):
     try:
         with conn.cursor() as cursor:
             query = "SELECT * FROM PlaceUser WHERE place_id = %s"
             cursor.execute(query, (id,))
             result = cursor.fetchone()
+            result['description'] = get_description_from_id(result['place_id'], col)
             return Response(result)
     finally:
         conn.close()
@@ -144,7 +145,7 @@ def get_filter(query_string, unfiltered, conn, col):
         if unfiltered is None:
             if int(user_lat) == -1 or int(radius) == 0:
                 sqlfilter = ("SELECT DISTINCT * "
-                    "FROM Place "
+                    "FROM PlaceUser "
                     "LIMIT 25;")
 
                 rows = cursor.execute(sqlfilter)
@@ -158,7 +159,7 @@ def get_filter(query_string, unfiltered, conn, col):
                     "cos(radians(latitude)) * "
                     "cos(radians(longitude) - radians(%s)))) "
                     "AS distance "
-                    "FROM Place "
+                    "FROM PlaceUser "
                     "HAVING distance < %s "
                     "ORDER BY distance "
                     "LIMIT 25;")
@@ -167,7 +168,7 @@ def get_filter(query_string, unfiltered, conn, col):
         else:
             if int(user_lat) == -1 or int(radius) == 0:
                 sqlfilter = ("SELECT DISTINCT * "
-                    "FROM Place "
+                    "FROM PlaceUser "
                     "WHERE place_id IN %s "
                     "LIMIT 25;")
 
@@ -182,7 +183,7 @@ def get_filter(query_string, unfiltered, conn, col):
                     "cos(radians(latitude)) * "
                     "cos(radians(longitude) - radians(%s)))) "
                     "AS distance "
-                    "FROM Place "
+                    "FROM PlaceUser "
                     "WHERE place_id IN %s "
                     "HAVING distance < %s "
                     "ORDER BY distance "

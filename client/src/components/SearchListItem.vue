@@ -25,7 +25,6 @@
                 <small>{{place.address}}</small>
               </div>
             </div>
-            {{place.description}}
         </div>
         <nav class="level is-mobile">
           <div class="level-left">
