@@ -47,6 +47,7 @@ def get_place(query_string, conn, col):
 
     return get_filter(query_string, places, conn, col)
 
+
 def get_place_id(id, conn, col):
     try:
         with conn.cursor() as cursor:

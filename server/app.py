@@ -100,7 +100,7 @@ def patch_place(id: int) -> Response:
 
 @app.route('/rating/{id}', methods=['GET'], cors=True)
 def get_place(id: int) -> Response:
-    return rating.get_rating(id, get_conn())
+    return rating.get_rating(id, get_SQL_conn())
 
 
 @app.route('/rating', methods=['POST'], cors=True, authorizer=jwt_auth)
@@ -108,4 +108,4 @@ def post_rating() -> Response:
     request = app.current_request
     username = get_user_name(request)
     email = get_user_email(request)
-    return rating.post_rating(request, email, username, get_conn())
+    return rating.post_rating(request, email, username, get_SQL_conn())

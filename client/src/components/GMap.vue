@@ -13,7 +13,6 @@
         :position="item.position"
         :title="item.placeName"
         @click="markerClick(item)"
-        :icon="{ url: require('@/assets/1-2.png')}"
       />
     </GmapMap>
   </div>

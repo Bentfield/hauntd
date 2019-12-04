@@ -53,12 +53,10 @@ import GMap from '@/components/GMap.vue';
 @Component({
   components: {
     GMap,
+    PlaceRater,
   },
   props: {
     id: String,
-  },
-  components: {
-    PlaceRater,
   },
 })
 export default class ViewPlace extends Vue {
