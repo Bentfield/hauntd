@@ -1,6 +1,6 @@
 from chalice import Chalice, Response, AuthResponse
-from chalicelib import place, auth
 from pymongo import MongoClient
+from chalicelib import place, rating, auth
 import pymysql.cursors
 import base64
 import boto3
@@ -95,10 +95,17 @@ def post_place() -> Response:
 def patch_place(id: int) -> Response:
     request = app.current_request
     email = get_user_email(request)
-    return place.patch_place(id, request, email, get_conn())
+    return place.patch_place(id, request, email, get_SQL_conn())
 
-# @app.route('/filter', methods=['GET'], cors=True)
-# def get_filter() -> Response:
-#     query_string = app.current_request.query_params
-#     return place.get_filter(query_string, [], get_conn())
-    # return Response("")
+
+@app.route('/rating/{id}', methods=['GET'], cors=True)
+def get_place(id: int) -> Response:
+    return rating.get_rating(id, get_conn())
+
+
+@app.route('/rating', methods=['POST'], cors=True, authorizer=jwt_auth)
+def post_rating() -> Response:
+    request = app.current_request
+    username = get_user_name(request)
+    email = get_user_email(request)
+    return rating.post_rating(request, email, username, get_conn())
