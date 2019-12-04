@@ -52,7 +52,6 @@ class App extends VuexModule implements IAppState {
       httpClient.get('/place/', { params: options })
         .then((response) => {
           const places: Place[] = [];
-          console.log(response.data);
           response.data.forEach((place: any) => {
             places.push({
               userName: place.user_name,

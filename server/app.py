@@ -73,7 +73,7 @@ def get_place() -> Response:
 
 
 @app.route('/place/{id}', methods=['GET'], cors=True)
-def get_place(id: int) -> Response:
+def get_place_id(id: int) -> Response:
     return place.get_place_id(id, get_SQL_conn(), get_mongo_conn())
 
 
@@ -99,7 +99,7 @@ def patch_place(id: int) -> Response:
 
 
 @app.route('/rating/{id}', methods=['GET'], cors=True)
-def get_place(id: int) -> Response:
+def get_rating(id: int) -> Response:
     return rating.get_rating(id, get_SQL_conn())
 
 
