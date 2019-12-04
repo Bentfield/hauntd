@@ -4,7 +4,7 @@
       <div class="box viewPlace" v-if="'placeId' in place">
         <div class="columns is-multiline">
           <div class="column is-full">
-            <h1>Map</h1> <!--Insert the map here for Google Maps-->
+            <GMap :places="places"></GMap>
           </div>
           <div class="column is-one-quarter">
             <h2 class="has-text-weight-bold is-size-5">{{ place.placeName }}</h2>
@@ -47,8 +47,13 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import PlaceRater from '@/components/PlaceRater.vue';
 import Place from '@/types/Place';
 import httpClient from '@/services/api';
+import GMap from '@/components/GMap.vue';
+
 
 @Component({
+  components: {
+    GMap,
+  },
   props: {
     id: String,
   },
@@ -62,6 +67,10 @@ export default class ViewPlace extends Vue {
   isLoading: boolean = false;
 
   place: Place = {} as any;
+
+  get places() {
+    return this.place === undefined ? [] : [this.place];
+  }
 
   created() {
     if (this.id) {
