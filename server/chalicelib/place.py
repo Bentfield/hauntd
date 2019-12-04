@@ -3,6 +3,28 @@ from pymongo import MongoClient
 from collections import OrderedDict
 import json
 
+def get_spooked():
+    col = get_mongo_conn()
+    spooky_time = col.find_one({"$sample" : {"size" : 1}})
+
+    return spooky_time
+
+def add_mongo(description, location, place_id, col):
+    result = col.insert({"description" : description, "location" : location, "place_id" : place_id})
+    if result["nInserted"] != 1:
+        return -1
+    else:
+        return 1
+
+def update_mongo(description, location, place_id, col):
+    result = col.update({"place_id" : place_id}, {"location" : location}, {"description" : description})
+
+def delete_mongo(place_id):
+    result = col.remove({"place_id" : place_id}, {"justOne" : "True"})
+    if result["nRemoved"] != 1:
+        return  -1
+    else:
+        return 1
 
 def get_description_from_id(place_id, col):
     doc = col.find_one({"place_id": place_id})
