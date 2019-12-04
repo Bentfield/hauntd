@@ -66,6 +66,7 @@ class App extends VuexModule implements IAppState {
             });
           });
           this.SET_PLACES(places);
+          this.filterOptions.createdBy = '';
         })
         .catch((e) => {
           this.SignOut();
