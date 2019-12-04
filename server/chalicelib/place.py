@@ -4,7 +4,7 @@ from collections import OrderedDict
 import json
 
 def get_spooked(col):
-    spooky_time = col.find_one({"$sample" : {"size" : 1}})
+    spooky_time = col.aggregate({"$sample" : {"size" : 1}})
 
     return Response(spooky_time)
 
