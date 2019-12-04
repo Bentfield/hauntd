@@ -14,6 +14,15 @@ class App extends VuexModule implements IAppState {
 
     public email: string = '';
 
+    public filterOptions: any = {
+      findNear: 0,
+      createdBy: '',
+      location: {
+        latitude: -1,
+        longitude: -1,
+      },
+    };
+
     @Mutation
     public SignIn(user: any) {
       httpClient.defaults.headers["Authorization"] = user.token.split(',')[0]; //eslint-disable-line
@@ -38,20 +47,25 @@ class App extends VuexModule implements IAppState {
 
     @Action
     public SearchPlaces(query: string) {
-      httpClient.get(`/place/${query}`)
+      const options: any = this.filterOptions;
+      options.query = query;
+      httpClient.get('/place/', { params: options })
         .then((response) => {
-          console.log(response);
-          const place : Place = {
-            placeId: response.data.place_id,
-            email: response.data.email,
-            placeName: response.data.place_name,
-            address: response.data.address,
-            latitude: response.data.latitude,
-            longitude: response.data.longitude,
-            avgRating: response.data.avg_rating,
-            description: response.data.description,
-          };
-          this.SET_PLACES([place]);
+          const places: Place[] = [];
+          console.log(response.data);
+          response.data.forEach((place: any) => {
+            places.push({
+              placeId: place.place_id,
+              email: place.email,
+              placeName: place.place_name,
+              address: place.address,
+              latitude: place.latitude,
+              longitude: place.longitude,
+              avgRating: place.avg_rating,
+              description: place.description,
+            });
+          });
+          this.SET_PLACES(places);
         })
         .catch((e) => {
           this.SignOut();
@@ -62,6 +76,13 @@ class App extends VuexModule implements IAppState {
     @Action
     public ClearPlaces() {
       this.SET_PLACES([]);
+    }
+
+    @Mutation
+    public updateFilterOptions(update: any) {
+      Object.keys(update).forEach((k) => {
+        this.filterOptions[k] = update[k];
+      });
     }
 
     @Action
