@@ -2,6 +2,7 @@ interface Place {
     placeId: number;
     placeName: string;
     email: string;
+    userName: string;
     address: string;
     latitude: number;
     longitude: number;

@@ -43,6 +43,7 @@ class App extends VuexModule implements IAppState {
           const place : Place = {
             placeId: response.data.place_id,
             email: response.data.email,
+            userName: response.data.user_name,
             placeName: response.data.place_name,
             address: response.data.address,
             latitude: response.data.latitude,

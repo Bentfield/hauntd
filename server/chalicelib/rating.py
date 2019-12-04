@@ -1,10 +1,5 @@
 from chalice import Response
 
-USER_CREATE = ("IF NOT EXISTS(SELECT email FROM User WHERE email = %s) "
-            "BEGIN "
-            "   INSERT INTO User (email, user_name) values (%s, %s) "
-            "END")
-
 
 def get_rating(id, conn):
     try:
@@ -26,7 +21,8 @@ def post_rating(request, email, username, conn):
         if rating < 0 or rating > 5:
             return Response("Invalid rating range. Rating should be an integer value in the range [0, 5].", status_code=400)
         with conn.cursor() as cursor:
-            cursor.execute(USER_CREATE, (email, email, username))
+            query = "INSERT IGNORE INTO User (user_name, email) VALUES (%s, %s)"
+            cursor.execute(query, (username, email))
             conn.commit()
             query = ("INSERT INTO Rating (place_id, email, rating) "
                      "VALUES (%s, %s, %s) "

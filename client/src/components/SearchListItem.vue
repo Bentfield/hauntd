@@ -30,11 +30,13 @@
         <nav class="level is-mobile">
           <div class="level-left">
             <p class="level-item">
-              <small>Submitted by: {{place.email}}</small>
+              <small>Submitted by: {{place.userName}}</small>
             </p>
           </div>
           <div class="level-right" v-if="allowEdit">
-            <router-link class="level-item" :to="{ name: 'edit', params: { id: place.placeId } }">
+            <router-link class="level-item"
+              :to="{ name: 'edit_place', params: { id: place.placeId } }"
+            >
               <span class="icon is-small"><i class="fas fa-edit"></i></span>
             </router-link>
           </div>

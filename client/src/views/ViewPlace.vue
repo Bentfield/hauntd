@@ -17,12 +17,12 @@
           </div>
           <div class="column">
             <h2 class="has-text-weight-bold is-size-5">Description</h2>
-            <p><small><b>Submitted by:</b> {{ place.email }}</small></p>
+            <p><small><b>Submitted by:</b> {{ place.userName }}</small></p>
             <p>{{ place.description }}</p>
           </div>
         </div>
       </div>
-      <div class="box viewPlace">
+      <!-- <div class="box viewPlace">
         <h2 class="has-text-weight-bold is-size-5">Reviews</h2>
         <article class="media">
           <div class="media-content">
@@ -37,7 +37,7 @@
             </div>
           </div>
         </article>
-      </div>
+      </div> -->
     </div>
   </section>
 </template>
@@ -72,6 +72,7 @@ export default class ViewPlace extends Vue {
             placeId: response.data.place_id,
             placeName: response.data.place_name,
             email: response.data.email,
+            userName: response.data.user_name,
             address: response.data.address,
             latitude: response.data.latitude,
             longitude: response.data.longitude,

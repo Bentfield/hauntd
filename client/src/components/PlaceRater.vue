@@ -12,7 +12,9 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import {
+  Vue, Component, Prop, Watch,
+} from 'vue-property-decorator';
 import Place from '@/types/Place';
 import AppModule from '@/store/modules/app';
 import httpClient from '@/services/api';
@@ -23,7 +25,12 @@ export default class PlaceRater extends Vue {
 
   @Prop(Number) readonly avgRating!: number;
 
-  private localRating: number | undefined = undefined;
+  @Watch('placeId')
+  onPlaceIdChanged(val: number, oldVal: number) {
+    this.localRating = undefined;
+  }
+
+  public localRating: number | undefined = undefined;
 
   get rating(): number {
     return this.localRating === undefined ? this.avgRating : this.localRating;
