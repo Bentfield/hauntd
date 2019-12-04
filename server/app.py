@@ -18,7 +18,7 @@ def decrypt_kms(sec_key):
 
 
 # Initialize database connection to MySQL
-def get_conn():
+def get_SQL_conn():
     try:
         return pymysql.connect(
             host=os.environ['DB_HOST'],
@@ -60,13 +60,13 @@ def get_user_name(request):
 
 @app.route('/place/{id}', methods=['GET'], cors=True)
 def get_place(id: int) -> Response:
-    return place.get_place(id, get_conn())
+    return place.get_place(id, get_SQL_conn())
 
 
 @app.route('/place/{id}', methods=['DELETE'], cors=True, authorizer=jwt_auth)
 def delete_place(id: int) -> Response:
     email = get_user_email(app.current_request)
-    return place.delete_place(id, email, get_conn())
+    return place.delete_place(id, email, get_SQL_conn())
 
 
 @app.route('/place', methods=['POST'], cors=True, authorizer=jwt_auth)
@@ -74,14 +74,14 @@ def post_place() -> Response:
     request = app.current_request
     username = get_user_name(request)
     email = get_user_email(request)
-    return place.post_place(request, username, email, get_conn())
+    return place.post_place(request, username, email, get_SQL_conn())
 
 
 @app.route('/place/{id}', methods=['PATCH'], cors=True, authorizer=jwt_auth)
 def patch_place(id: int) -> Response:
     request = app.current_request
     email = get_user_email(request)
-    return place.patch_place(id, request, email, get_conn())
+    return place.patch_place(id, request, email, get_SQL_conn())
 
 
 @app.route('/rating/{id}', methods=['GET'], cors=True)
