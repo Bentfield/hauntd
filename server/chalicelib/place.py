@@ -1,66 +1,53 @@
 from chalice import Response
 from pymongo import MongoClient
+from collections import OrderedDict
+import json
 
-def get_mongo_conn():
-    client = MongoClient("mongodb+srv://ssethia2:hauntd_411@hauntdtext-ox5ai.mongodb.net/test?retryWrites=true&w=majority")
-    
-    db = client.hauntd_
-    col = db.hauntd_places
-    return col
 
-def description_search(keyword):
-    col = get_mongo_conn()
+def get_description_from_id(place_id, col):
+    doc = col.find_one({"place_id": place_id})
+    return doc["description"]
+
+
+def description_search(keyword, col):
     col.create_index([("description", "text")])
-
     docs = col.find({"$text": {"$search": keyword}}, {"score": {"$meta": "textScore"}})
-
     return docs
 
-def location_search(location_name):
-    col = get_mongo_conn()
+
+def location_search(location_name, col):
     reg_location_name = "(" + location_name + ")" +"."
-
-    docs = col.find({"location" : {"$regex" : reg_location_name}})
-
+    docs = col.find({"location" : {"$regex" : reg_location_name, "$options": "i"}})
     return docs
 
-def location_exact_match(location_query):
-    col = get_mongo_conn()
 
+def location_exact_match(location_query, col):
     docs = col.find_one({"location" : location_query})
-
     return docs
 
-def location_and_description(query):
-    ids_to_show = []
-    num_left = 25
 
-    location_match = location_exact_match(query)
+def get_place(query_string, conn, col):
+    query = query_string.get('query')
+    if len(query) == 0:
+        return get_filter(query_string, None, conn, col)
+
+    places = OrderedDict()
+
+    location_match = location_exact_match(query, col)
     if location_match != None:
-        ids_to_show[0] = location_match["place_id"]
-        num_left = num_left - 1
-    
-    location_reg = location_search(query)
-    location_counter = 0
-    for doc in location_reg:
-        if location_counter == 5:
-            break
-        else:
-            ids_to_show.append(doc["place_id"])
-            location_counter = location_counter + 1
-            num_left = num_left  - 1
-    
-    description_match = description_search(query)
-    for descdoc in description_match:
-        if num_left == 0:
-            break
-        else:
-            ids_to_show.append(descdoc["place_id"])
-            num_left = num_left  - 1
-    
-    return ids_to_show
+        places[location_match["place_id"]] = location_match["description"]
 
-def get_place(id, conn):
+    location_reg = location_search(query, col)
+    for doc in location_reg:
+        places[doc["place_id"]] = doc["description"]
+
+    description_match = description_search(query, col)
+    for descdoc in description_match:
+        places[descdoc["place_id"]] = descdoc["description"]
+
+    return get_filter(query_string, places, conn, col)
+
+def get_place_id(id, conn):
     try:
         with conn.cursor() as cursor:
             query = "SELECT * FROM PlaceUser WHERE place_id = %s"
@@ -100,8 +87,8 @@ def post_place(request, username, email, conn):
             create_user = "INSERT IGNORE INTO User (user_name, email) VALUES (%s, %s)"
             cursor.execute(create_user, (username, email))
             conn.commit()
-            query = "INSERT INTO Place (email, place_name, address, latitude, longitude, avg_rating) VALUES (%s, %s, %s, %s, %s, %s)"
-            cursor.execute(query, (email, place_name, address, latitude, longitude, 0))
+            query = "INSERT INTO Place (email, place_name, address, latitude, longitude, avg_rating) VALUES (%s, %s, %s, %s, %s, 0)"
+            cursor.execute(query, (email, place_name, address, latitude, longitude))
             conn.commit()
             return Response("")
     finally:
@@ -124,3 +111,95 @@ def patch_place(id, request, email, conn):
                 return Response("", status_code=403)
     finally:
         conn.close()
+
+
+def reorder_places(places, ids):
+    if len(ids) == 0:
+        return places
+    reordered = []
+    for id in ids:
+        for place in places:
+            if place['place_id'] == id:
+                reordered.append(place)
+    return reordered
+
+
+def get_filter(query_string, unfiltered, conn, col):
+    if unfiltered is not None and len(unfiltered) == 0:
+        return Response("")
+    radius = query_string.get('findNear')
+    user_lat = json.loads(query_string.get('location'))['latitude']
+    user_long = json.loads(query_string.get('location'))['longitude']
+    email = query_string.get('createdBy')
+    if int(user_lat) == -1 or int(radius) == 0:
+        while len(unfiltered) > 25:
+            unfiltered.popitem()
+    ids = []
+    if unfiltered is not None:
+        for item in unfiltered.keys():
+            ids.append(int(item))
+
+    places = []
+    with conn.cursor() as cursor:
+        if unfiltered is None:
+            if int(user_lat) == -1 or int(radius) == 0:
+                sqlfilter = ("SELECT DISTINCT * "
+                    "FROM Place "
+                    "LIMIT 25;")
+
+                rows = cursor.execute(sqlfilter)
+            else:
+                sqlfilter = ("SELECT DISTINCT *,"
+                    "(3959 * "
+                    "acos("
+                    "sin(radians(%s)) * "
+                    "sin(radians(latitude)) + "
+                    "cos(radians(%s)) * "
+                    "cos(radians(latitude)) * "
+                    "cos(radians(longitude) - radians(%s)))) "
+                    "AS distance "
+                    "FROM Place "
+                    "HAVING distance < %s "
+                    "ORDER BY distance "
+                    "LIMIT 25;")
+
+                rows = cursor.execute(sqlfilter, (user_lat, user_lat, user_long, radius))
+        else:
+            if int(user_lat) == -1 or int(radius) == 0:
+                sqlfilter = ("SELECT DISTINCT * "
+                    "FROM Place "
+                    "WHERE place_id IN %s "
+                    "LIMIT 25;")
+
+                rows = cursor.execute(sqlfilter, (ids,))
+            else:
+                sqlfilter = ("SELECT DISTINCT *,"
+                    "(3959 * "
+                    "acos("
+                    "sin(radians(%s)) * "
+                    "sin(radians(latitude)) + "
+                    "cos(radians(%s)) * "
+                    "cos(radians(latitude)) * "
+                    "cos(radians(longitude) - radians(%s)))) "
+                    "AS distance "
+                    "FROM Place "
+                    "WHERE place_id IN %s "
+                    "HAVING distance < %s "
+                    "ORDER BY distance "
+                    "LIMIT 25;")
+
+                rows = cursor.execute(sqlfilter, (user_lat, user_lat, user_long, ids, radius))
+
+        for i in range(0, rows):
+            place = cursor.fetchone()
+            if email == '' or place['email'] == email:
+                if unfiltered is not None:
+                    place['description'] = unfiltered[place['place_id']]
+                else:
+                    place['description'] = get_description_from_id(place['place_id'], col)
+                places.append(place)
+                results = reorder_places(places, ids)
+        conn.commit()
+        if len(places) == 0:
+            return Response("")
+        return Response(results)

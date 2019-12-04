@@ -1,4 +1,5 @@
 from chalice import Chalice, Response, AuthResponse
+from pymongo import MongoClient
 from chalicelib import place, rating, auth
 import pymysql.cursors
 import base64
@@ -33,6 +34,13 @@ def get_SQL_conn():
         app.log.error(e)
 
 
+def get_mongo_conn():
+    client = MongoClient("mongodb+srv://ssethia2:hauntd411@hauntdtext-ox5ai.mongodb.net/test?retryWrites=true&w=majority")
+    db = client.hauntd_
+    col = db.hauntd_places
+    return col
+
+
 # Application Routes
 @app.route('/')
 def index():
@@ -58,9 +66,15 @@ def get_user_name(request):
     return request.context['authorizer']['principalId'][1]
 
 
+@app.route('/place', methods=['GET'], cors=True)
+def get_place() -> Response:
+    query_string = app.current_request.query_params
+    return place.get_place(query_string, get_SQL_conn(), get_mongo_conn())
+
+
 @app.route('/place/{id}', methods=['GET'], cors=True)
 def get_place(id: int) -> Response:
-    return place.get_place(id, get_SQL_conn())
+    return place.get_place_id(id, get_SQL_conn())
 
 
 @app.route('/place/{id}', methods=['DELETE'], cors=True, authorizer=jwt_auth)
