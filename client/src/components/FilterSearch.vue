@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <b-field label="Sort By" v-if="sizeOfSearch">
+    <!-- <b-field label="Sort By" v-if="sizeOfSearch">
       <b-dropdown v-model="sort" aria-role="list">
         <button class="button" type="button" slot="trigger">
           <template v-if="!sort">
@@ -10,9 +10,9 @@
               <span>Top Rated &#9662;</span>
           </template>
           <b-icon icon="menu-down"></b-icon>
-        </button>
+        </button> -->
 
-        <b-dropdown-item :value="false" aria-role="listitem">
+        <!-- <b-dropdown-item :value="false" aria-role="listitem">
           <div class="media">
               <b-icon class="media-left"></b-icon>
               <div class="media-content">
@@ -30,7 +30,7 @@
           </div>
         </b-dropdown-item>
       </b-dropdown>
-    </b-field>
+    </b-field> -->
 
     <section>
       <b-button @click="sortTopRated" v-if="sort">Apply</b-button>
