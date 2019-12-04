@@ -12,6 +12,11 @@
       ></b-input>
       <p class="control">
         <button class="button is-primary is-medium" @click="search">Boo</button>
+        <b-button type="is-danger" size="is-medium"
+          icon-pack="fas"
+          icon-right="ghost"
+        >
+            </b-button>
       </p>
     </b-field>
 

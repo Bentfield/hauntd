@@ -3,11 +3,10 @@ from pymongo import MongoClient
 from collections import OrderedDict
 import json
 
-def get_spooked():
-    col = get_mongo_conn()
+def get_spooked(col):
     spooky_time = col.find_one({"$sample" : {"size" : 1}})
 
-    return spooky_time
+    return Response(spooky_time)
 
 
 def insert_mongo(description, location, place_id, col):

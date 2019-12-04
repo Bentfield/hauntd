@@ -66,6 +66,10 @@ def get_user_name(request):
     return request.context['authorizer']['principalId'][1]
 
 
+@app.route('/spook', methods=['GET'], cors=True)
+def get_spooked() -> Response:
+    return place.get_spooked(get_mongo_conn())
+
 @app.route('/place', methods=['GET'], cors=True)
 def get_place() -> Response:
     query_string = app.current_request.query_params
