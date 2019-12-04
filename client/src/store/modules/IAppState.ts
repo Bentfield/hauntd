@@ -4,4 +4,5 @@ export interface IAppState {
     places: Place[],
     loggedIn: boolean,
     email: string,
+    filterOptions: any,
 }

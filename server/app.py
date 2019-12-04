@@ -1,5 +1,6 @@
 from chalice import Chalice, Response, AuthResponse
-from chalicelib import place, auth
+from pymongo import MongoClient
+from chalicelib import place, rating, auth
 import pymysql.cursors
 import base64
 import boto3
@@ -18,7 +19,7 @@ def decrypt_kms(sec_key):
 
 
 # Initialize database connection to MySQL
-def get_conn():
+def get_SQL_conn():
     try:
         return pymysql.connect(
             host=os.environ['DB_HOST'],
@@ -31,6 +32,13 @@ def get_conn():
     except pymysql.MySQLError as e:
         app.log.error("ERROR: Unexpected error: Could not connect to MySQL instance.")
         app.log.error(e)
+
+
+def get_mongo_conn():
+    client = MongoClient("mongodb+srv://ssethia2:hauntd411@hauntdtext-ox5ai.mongodb.net/test?retryWrites=true&w=majority")
+    db = client.hauntd_
+    col = db.hauntd_places
+    return col
 
 
 # Application Routes
@@ -58,15 +66,21 @@ def get_user_name(request):
     return request.context['authorizer']['principalId'][1]
 
 
+@app.route('/place', methods=['GET'], cors=True)
+def get_place() -> Response:
+    query_string = app.current_request.query_params
+    return place.get_place(query_string, get_SQL_conn(), get_mongo_conn())
+
+
 @app.route('/place/{id}', methods=['GET'], cors=True)
 def get_place(id: int) -> Response:
-    return place.get_place(id, get_conn())
+    return place.get_place_id(id, get_SQL_conn(), get_mongo_conn())
 
 
 @app.route('/place/{id}', methods=['DELETE'], cors=True, authorizer=jwt_auth)
 def delete_place(id: int) -> Response:
     email = get_user_email(app.current_request)
-    return place.delete_place(id, email, get_conn())
+    return place.delete_place(id, email, get_SQL_conn())
 
 
 @app.route('/place', methods=['POST'], cors=True, authorizer=jwt_auth)
@@ -74,17 +88,24 @@ def post_place() -> Response:
     request = app.current_request
     username = get_user_name(request)
     email = get_user_email(request)
-    return place.post_place(request, username, email, get_conn())
+    return place.post_place(request, username, email, get_SQL_conn())
 
 
 @app.route('/place/{id}', methods=['PATCH'], cors=True, authorizer=jwt_auth)
 def patch_place(id: int) -> Response:
     request = app.current_request
     email = get_user_email(request)
-    return place.patch_place(id, request, email, get_conn())
+    return place.patch_place(id, request, email, get_SQL_conn())
 
-@app.route('/filter', methods=['GET'], cors=True)
-def get_filter() -> Response:
-    query_string = app.current_request.query_params
-    return place.get_filter(query_string, [], get_conn())
-    # return Response("")
+
+@app.route('/rating/{id}', methods=['GET'], cors=True)
+def get_place(id: int) -> Response:
+    return rating.get_rating(id, get_conn())
+
+
+@app.route('/rating', methods=['POST'], cors=True, authorizer=jwt_auth)
+def post_rating() -> Response:
+    request = app.current_request
+    username = get_user_name(request)
+    email = get_user_email(request)
+    return rating.post_rating(request, email, username, get_conn())

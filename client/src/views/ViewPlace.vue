@@ -12,14 +12,17 @@
             <p>{{ place.address }}</p>
             <p class="has-text-weight-bold is-size-6">Lat/Long:</p>
             <small>{{ place.latitude }}, {{ place.longitude }}</small>
+            <p class="has-text-weight-bold is-size-6">User Rating:</p>
+            <PlaceRater :placeId="place.placeId" :avgRating="place.avgRating"> </PlaceRater>
           </div>
           <div class="column">
             <h2 class="has-text-weight-bold is-size-5">Description</h2>
+            <p><small><b>Submitted by:</b> {{ place.userName }}</small></p>
             <p>{{ place.description }}</p>
           </div>
         </div>
       </div>
-      <div class="box viewPlace">
+      <!-- <div class="box viewPlace">
         <h2 class="has-text-weight-bold is-size-5">Reviews</h2>
         <article class="media">
           <div class="media-content">
@@ -34,13 +37,14 @@
             </div>
           </div>
         </article>
-      </div>
+      </div> -->
     </div>
   </section>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
+import PlaceRater from '@/components/PlaceRater.vue';
 import Place from '@/types/Place';
 import httpClient from '@/services/api';
 import GMap from '@/components/GMap.vue';
@@ -51,11 +55,14 @@ import GMap from '@/components/GMap.vue';
     GMap,
   },
   props: {
-    id: Number,
+    id: String,
+  },
+  components: {
+    PlaceRater,
   },
 })
 export default class ViewPlace extends Vue {
-  @Prop(Number) readonly id: number | undefined;
+  @Prop(String) readonly id: String | undefined;
 
   isLoading: boolean = false;
 
@@ -74,6 +81,7 @@ export default class ViewPlace extends Vue {
             placeId: response.data.place_id,
             placeName: response.data.place_name,
             email: response.data.email,
+            userName: response.data.user_name,
             address: response.data.address,
             latitude: response.data.latitude,
             longitude: response.data.longitude,
