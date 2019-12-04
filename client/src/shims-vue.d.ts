@@ -1,3 +1,5 @@
+declare module 'vue2-google-maps'
+declare module 'googlemaps';
 declare module '*.vue' {
   import Vue from 'vue';
 
