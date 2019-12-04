@@ -4,8 +4,8 @@ from google.auth.transport import requests
 import json
 
 
-# CLIENT_ID = "406470965278-g9duphf6roh47jvu380q5orrojbs8jld.apps.googleusercontent.com" # Local
-CLIENT_ID = "406470965278-n9lk4ieelrltn6mp41ict7mqrdjmn0g7.apps.googleusercontent.com" # Production
+CLIENT_ID = "406470965278-g9duphf6roh47jvu380q5orrojbs8jld.apps.googleusercontent.com" # Local
+# CLIENT_ID = "406470965278-n9lk4ieelrltn6mp41ict7mqrdjmn0g7.apps.googleusercontent.com" # Production
 
 
 def decode_jwt_token(token):

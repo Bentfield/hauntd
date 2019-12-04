@@ -164,10 +164,10 @@ export default class EditPlace extends Vue {
     if (!this.place.placeName) {
       return false;
     }
-    if (!this.place.latitude) {
+    if (!this.place.latitude && this.place.latitude !== 0) {
       return false;
     }
-    if (!this.place.longitude) {
+    if (!this.place.longitude && this.place.longitude !== 0) {
       return false;
     }
     if (!this.place.address) {
