@@ -5,6 +5,7 @@ import base64
 import boto3
 import os
 import logging
+import pymongo
 
 app = Chalice(app_name='hauntd')
 app.log.setLevel(logging.DEBUG)
@@ -16,6 +17,12 @@ def decrypt_kms(sec_key):
     response = kms.decrypt(CiphertextBlob=base64.b64decode(sec_key))  # decode key before decrypting it
     return response['Plaintext'].decode('utf-8')  # decrypted key comes in bytes literal form, must decode to utf-8
 
+def get_mongo_conn():
+    client = MongoClient("mongodb+srv://ssethia2:hauntd_411@hauntdtext-ox5ai.mongodb.net/test?retryWrites=true&w=majority")
+    
+    db = client.hauntd_
+    col = db.hauntd_places
+    return col
 
 # Initialize database connection to MySQL
 def get_SQL_conn():

@@ -1,12 +1,11 @@
 from chalice import Response
-from pymongo import MongoClient
 
-def get_mongo_conn():
-    client = MongoClient("mongodb+srv://ssethia2:hauntd_411@hauntdtext-ox5ai.mongodb.net/test?retryWrites=true&w=majority")
-    
-    db = client.hauntd_
-    col = db.hauntd_places
-    return col
+def update_mongo(description, location, place_id, col):
+    result = col.insert({"description" : description, "location" : location, "place_id" : place_id})
+    if result["nInserted"] != 1:
+        return -1
+    else:
+        return 1
 
 def description_search(keyword):
     col = get_mongo_conn()
