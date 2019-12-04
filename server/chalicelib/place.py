@@ -30,6 +30,12 @@ def location_exact_match(location_query):
 
     return docs
 
+def get_spooked():
+    col = get_mongo_conn()
+    spooky_time = col.find_one("$sample" : {"size" : 1})
+
+    return spooky_time
+
 def location_and_description(query):
     ids_to_show = []
     num_left = 25
