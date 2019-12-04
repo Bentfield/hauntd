@@ -61,13 +61,15 @@ export default class GMap extends Vue {
         const bounds = new google.maps.LatLngBounds();
         for (let i = 0; i < placeArr.length; i += 1) {
           this.ll = { lat: placeArr[i].latitude, lng: placeArr[i].longitude };
-          this.marker = new google.maps.Marker({
-            position: this.ll,
-            placeId: placeArr[i].placeId,
-            placeName: placeArr[i].placeName,
-          });
-          this.markers.push(this.marker);
-          bounds.extend(this.ll);
+          if (!(this.ll.lat === 0 && this.ll.lng === 0)) {
+            this.marker = new google.maps.Marker({
+              position: this.ll,
+              placeId: placeArr[i].placeId,
+              placeName: placeArr[i].placeName,
+            });
+            this.markers.push(this.marker);
+            bounds.extend(this.ll);
+          }
         }
 
         this.center.lat = placeArr[0].latitude;

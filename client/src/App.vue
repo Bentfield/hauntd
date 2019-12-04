@@ -104,7 +104,7 @@ export default class App extends Vue {
   data() {
     return {
       googleSignInParams: {
-        client_id: '406470965278-g9duphf6roh47jvu380q5orrojbs8jld.apps.googleusercontent.com',
+        client_id: process.env.VUE_APP_OAUTH_CLIENT,
       },
     };
   }
