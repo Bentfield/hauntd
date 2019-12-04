@@ -1,12 +1,15 @@
 from chalice import Response
 from pymongo import MongoClient
 
-def description_search(keyword):
+def get_mongo_conn():
     client = MongoClient("mongodb+srv://ssethia2:hauntd_411@hauntdtext-ox5ai.mongodb.net/test?retryWrites=true&w=majority")
-
+    
     db = client.hauntd_
     col = db.hauntd_places
+    return col
 
+def description_search(keyword):
+    col = get_mongo_conn()
     col.create_index([("description", "text")])
 
     docs = col.find({"$text": {"$search": keyword}}, {"score": {"$meta": "textScore"}})
@@ -14,11 +17,7 @@ def description_search(keyword):
     return docs
 
 def location_search(location_name):
-    client = MongoClient("mongodb+srv://ssethia2:hauntd411@hauntdtext-ox5ai.mongodb.net/test?retryWrites=true&w=majority")
-
-    db = client.hauntd_
-    col = db.hauntd_places
-
+    col = get_mongo_conn()
     reg_location_name = "(" + location_name + ")" +"."
 
     docs = col.find({"location" : {"$regex" : reg_location_name}})
@@ -26,10 +25,7 @@ def location_search(location_name):
     return docs
 
 def location_exact_match(location_query):
-    client = MongoClient("mongodb+srv://ssethia2:hauntd411@hauntdtext-ox5ai.mongodb.net/test?retryWrites=true&w=majority")
-
-    db = client.hauntd_
-    col = db.hauntd_places
+    col = get_mongo_conn()
 
     docs = col.find_one({"location" : location_query})
 
