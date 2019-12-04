@@ -63,7 +63,7 @@ def location_and_description(query):
 def get_place(id, conn):
     try:
         with conn.cursor() as cursor:
-            query = "SELECT * FROM Place WHERE place_id = %s"
+            query = "SELECT * FROM PlaceUser WHERE place_id = %s"
             cursor.execute(query, (id,))
             result = cursor.fetchone()
             return Response(result)
@@ -90,19 +90,18 @@ def post_place(request, username, email, conn):
     place_name = json["place_name"]
     address = json["address"]
     description = json["description"]
-    if "latitude" in json and "longitude" in json:
-        latitude = f"{json['latitude']}"
-        longitude = f"{json['longitude']}"
-    else:
-        latitude = None
-        longitude = None
+    latitude = float(json["latitude"])
+    longitude = float(json["longitude"])
     try:
         with conn.cursor() as cursor:
+            # query = "INSERT INTO User (user_name, email) VALUES (%s, %s)"
+            # cursor.execute(query, (username, email))
+            # conn.commit()
             create_user = "INSERT IGNORE INTO User (user_name, email) VALUES (%s, %s)"
             cursor.execute(create_user, (username, email))
             conn.commit()
-            query = "INSERT INTO Place (email, place_name, address, latitude, longitude, description) VALUES (%s, %s, %s, %s, %s, %s)"
-            cursor.execute(query, (email, place_name, address, latitude, longitude, description))
+            query = "INSERT INTO Place (email, place_name, address, latitude, longitude, avg_rating) VALUES (%s, %s, %s, %s, %s, %s)"
+            cursor.execute(query, (email, place_name, address, latitude, longitude, 0))
             conn.commit()
             return Response("")
     finally:
@@ -111,7 +110,7 @@ def post_place(request, username, email, conn):
 
 def patch_place(id, request, email, conn):
     json = request.json_body
-    UPDATEABLE = set(["place_name", "address", "description", "latitude", "longitude"])
+    UPDATEABLE = set(["place_name", "address", "latitude", "longitude"])
     try:
         with conn.cursor() as cursor:
             for k, v in json.items():

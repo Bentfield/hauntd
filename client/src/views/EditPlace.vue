@@ -11,6 +11,7 @@
                 placeholder="Name of location"
                 maxlength="255"
                 v-model="place.placeName"
+                required
                 :has-counter="false">
               </b-input>
           </b-field>
@@ -19,28 +20,40 @@
                 placeholder="Rough address of location"
                 maxlength="205"
                 v-model="place.address"
+                required
                 :has-counter="false">
               </b-input>
           </b-field>
-          <!-- <b-field label="City" label-position="inside">
+          <b-field grouped>
+            <b-field label="Latitude" label-position="inside" expanded>
+                <b-input
+                  placeholder="Latitude"
+                  type="number"
+                  step="0.00000001"
+                  maxlength="16"
+                  v-model="place.latitude"
+                  required
+                  :has-counter="false">
+                </b-input>
+            </b-field>
+            <b-field label="Longitude" label-position="inside" expanded>
               <b-input
-                placeholder="Minneapolis, Chicago, etc.."
-                maxlength="30"
+                placeholder="Longitude"
+                type="number"
+                step="0.00000001"
+                maxlength="16"
+                v-model="place.longitude"
+                required
                 :has-counter="false">
               </b-input>
+            </b-field>
           </b-field>
-          <b-field label="State" label-position="inside">
-              <b-input
-                placeholder="Minnesota, Illinois, etc.."
-                maxlength="20"
-                :has-counter="false">
-              </b-input>
-          </b-field> -->
           <b-field label="Description" label-position="inside">
               <b-input
                 type="textarea"
                 placeholder="What makes this place haunted?"
                 v-model="place.description"
+                required
                 maxlength="5000">
               </b-input>
           </b-field>
@@ -90,12 +103,21 @@ export default class EditPlace extends Vue {
   place: Place = {} as any;
 
   public save(): void {
+    if (!this.validatePlace()) {
+      this.$buefy.toast.open({
+        message: 'Place fill in all fields.',
+        type: 'is-danger',
+      });
+      return;
+    }
     this.saving = true;
     if (!this.isNew) {
       httpClient.patch(`/place/${this.place.placeId}`, {
         place_name: this.place.placeName,
         description: this.place.description,
         address: this.place.address,
+        latitude: this.place.latitude,
+        longitude: this.place.longitude,
       }).then((response) => {
         this.$buefy.toast.open({
           message: 'Successfully saved changes.',
@@ -118,7 +140,8 @@ export default class EditPlace extends Vue {
         place_name: this.place.placeName,
         address: this.place.address,
         description: this.place.description,
-
+        latitude: this.place.latitude,
+        longitude: this.place.longitude,
       }).then((response) => {
         this.$buefy.toast.open({
           message: 'Successfully created new place.',
@@ -135,6 +158,25 @@ export default class EditPlace extends Vue {
           this.saving = false;
         });
     }
+  }
+
+  private validatePlace(): boolean {
+    if (!this.place.placeName) {
+      return false;
+    }
+    if (!this.place.latitude) {
+      return false;
+    }
+    if (!this.place.longitude) {
+      return false;
+    }
+    if (!this.place.address) {
+      return false;
+    }
+    if (!this.place.description) {
+      return false;
+    }
+    return true;
   }
 
   public deletePlace(): void {
@@ -164,6 +206,7 @@ export default class EditPlace extends Vue {
           this.place.placeId = response.data.place_id;
           this.place.placeName = response.data.place_name;
           this.place.email = response.data.email;
+          this.place.userName = response.data.user_name;
           this.place.address = response.data.address;
           this.place.latitude = response.data.latitude;
           this.place.longitude = response.data.longitude;
