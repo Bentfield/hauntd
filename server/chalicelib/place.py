@@ -9,7 +9,7 @@ def get_spooked():
 
     return spooky_time
 
-def add_mongo(description, location, place_id, col):
+def insert_mongo(description, location, place_id, col):
     result = col.insert({"description" : description, "location" : location, "place_id" : place_id})
     if result["nInserted"] != 1:
         return -1
@@ -19,7 +19,7 @@ def add_mongo(description, location, place_id, col):
 def update_mongo(description, location, place_id, col):
     result = col.update({"place_id" : place_id}, {"location" : location}, {"description" : description})
 
-def delete_mongo(place_id):
+def delete_mongo(place_id, col):
     result = col.remove({"place_id" : place_id}, {"justOne" : "True"})
     if result["nRemoved"] != 1:
         return  -1
@@ -81,13 +81,14 @@ def get_place_id(id, conn, col):
         conn.close()
 
 
-def delete_place(id, email, conn):
+def delete_place(id, email, conn, col):
     try:
         with conn.cursor() as cursor:
             query = "DELETE FROM Place WHERE place_id = %s AND email = %s"
             rows = cursor.execute(query, (id, email))
             conn.commit()
             if rows > 0:
+                delete_mongo(json["place_id"], col)
                 return Response("")
             else:
                 return Response("", status_code=403)
@@ -95,7 +96,7 @@ def delete_place(id, email, conn):
         conn.close()
 
 
-def post_place(request, username, email, conn):
+def post_place(request, username, email, conn, col):
     json = request.json_body
     place_name = json["place_name"]
     address = json["address"]
@@ -112,13 +113,18 @@ def post_place(request, username, email, conn):
             conn.commit()
             query = "INSERT INTO Place (email, place_name, address, latitude, longitude, avg_rating) VALUES (%s, %s, %s, %s, %s, 0)"
             cursor.execute(query, (email, place_name, address, latitude, longitude))
+            
+            query = "SELECT * FROM Place WHERE place_name = %s ORDER BY place_id DESC"
+            cursor.execute(query, (place_name))
+            place_id = cursor.fetchone()["place_id"]
             conn.commit()
+            insert_mongo(description, place_name, place_id, col)
             return Response("")
     finally:
         conn.close()
 
 
-def patch_place(id, request, email, conn):
+def patch_place(id, request, email, conn, col):
     json = request.json_body
     UPDATEABLE = set(["place_name", "address", "latitude", "longitude"])
     try:
@@ -129,6 +135,7 @@ def patch_place(id, request, email, conn):
                     rows = cursor.execute(sqlpatch, (v, id, email))
             conn.commit()
             if rows > 0:
+                update_mongo(json["description"], json["place_name"], json["place_id"], col)
                 return Response("")
             else:
                 return Response("", status_code=403)
