@@ -29,8 +29,9 @@ def delete_mongo(place_id, col):
 
 def get_description_from_id(place_id, col):
     doc = col.find_one({"place_id": place_id})
-    return doc["description"]
-
+    if doc and "description" in doc:
+        return doc["description"]
+    return "No description found."
 
 def description_search(keyword, col):
     col.create_index([("description", "text")])
