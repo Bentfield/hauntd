@@ -8,7 +8,8 @@
         "DB_HOST": "hauntddatabasemysql.cbbquhefumtv.us-east-1.rds.amazonaws.com",
         "DB_USER": "admin",
         "DB_PASS": "AQICAHicIMc8BYL/I4pOk7e7Vdk/o+fwlPdvICGeWDKUt2FMHgGvQyJI/olYZv6hRuQe4mkJAAAAbDBqBgkqhkiG9w0BBwagXTBbAgEAMFYGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMxiF0FtuW1igzJDxzAgEQgClxejTC/UBTFyFk3Zb/YwaW7/gdM2DtP8SPFBPKkS3Z0cskqQ3YLdZaaw==",
-        "DB_NAME": "hauntddatabasemysql"
+        "DB_NAME": "hauntddatabasemysql",
+        "DB_MONGO_URL": "AQICAHicIMc8BYL/I4pOk7e7Vdk/o+fwlPdvICGeWDKUt2FMHgEJpjZVATZKKdyA7mYnY5t+AAAAxTCBwgYJKoZIhvcNAQcGoIG0MIGxAgEAMIGrBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDFyaJsmtOgaKL8J20AIBEIB+983itqfaG4o4eKp6kW6SngxzWOeKrXtozmZjBhDle+3/PDdQzyo09fSArhehgASWnihSsrjf8O3dGlcvHO/EYKLJZYibmygHj8CKVwDywqjCfqG71zSWeLd4V6flwbKNPissxMy29mnCikDFF5ru+JizpcPowLoMuYhKi++/"
       },
       "subnet_ids": ["subnet-164c7071", "subnet-1635c318", "subnet-77d1e82b", "subnet-66c78758", "subnet-5c2fe311", "subnet-f2d1eadc"],
       "security_group_ids": ["sg-06195a3a1657f1879"],

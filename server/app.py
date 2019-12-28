@@ -35,7 +35,7 @@ def get_SQL_conn():
 
 
 def get_mongo_conn():
-    client = MongoClient("mongodb+srv://ssethia2:hauntd411@hauntdtext-ox5ai.mongodb.net/test?retryWrites=true&w=majority")
+    client = MongoClient(decrypt_kms(os.environ['DB_MONGO_URL']))
     db = client.hauntd_
     col = db.hauntd_places
     return col
