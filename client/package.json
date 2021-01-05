@@ -12,7 +12,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/vue-fontawesome": "^0.1.8",
     "@types/node": "^12.12.14",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "buefy": "^0.8.6",
     "vue": "^2.6.10",
     "vue-axios": "^2.1.5",
